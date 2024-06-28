@@ -1,60 +1,37 @@
 # Importacion de librerias necesarias
 import math as mat
+from sympy.parsing.sympy_parser import parse_expr
+from sympy import lambdify
 
 # Variables necesarias
-init = True
-X0 = 2.000
-imax = 20
-ErrStop = 0.001
-gx = lambda x: mat.sqrt((x + 5) / 2)
+entrada_usuario = input("Ingrese la funcion iterativa: ")
+fx = lambdify(x, parse_expr(entrada_usuario)) #(2*(x)**3 -11.7*(x)**2 -5)/-17.7
+X0 = float(input("Ingrese el X0 para la funcion: "))
+rond = int(input("Ingrese las cifras deseadas: "))
+ErrStop = float(input("Ingrese el error que quiere usar como limite: "))
 
 #Metodo para carlcular el error relativo
 def ErrRel(Vante, Vactual):
-    return round(abs(Vactual - Vante)/Vante,3)
+    return round(abs((Vante - Vactual)/Vactual)*100, 2)
 
 #Metodo para calcular el error aproximado
 def ErrAprox(Vante, Vactual):
-    return round(abs(Vactual - Vante),3)
+    return round(abs(Vante - Vactual)*100, 2)
 #----------------------------------------------------------------
 #Calculo con limite de error
 def LimiErr(X0, ErrStop):
-    ErrApr =100
+    ErrApr = 100
     i = 0
     #Fila inicial
-    result = "||  i   ||   Xi   ||   ErrAprox%   ||   ErrRel%   ||\n"
-    result += "------------------------------------------------------\n"
+    result = "||  i   ||   Xi   ||  Xi+1  ||   ErrAprox%   ||   ErrRel%   ||\n"
+    result += "--------------------------------------------------------------\n"
     while(ErrApr > ErrStop):
-        X1 = round(gx(X0),3)
+        X1 = round(fx(X0), rond)
         ErrApr = ErrAprox(X0, X1)
         ErrRela = ErrRel(X0, X1)
-        result += f"||  {i}  ||  {X0}  ||  {ErrApr}  ||  {ErrRela}  ||\n"
+        result += f"||  {i}  ||  {X0}  ||  {X1}  ||  {ErrApr}%  ||  {ErrRela}%  ||\n"
         X0 = X1
-        i+=1
+        i += 1
     return result
 #----------------------------------------------------------------
-#Calculo con Limite de iteraciones
-def LimitIteracion(X0, imax):
-    #Fila inicial
-    result = "||  i   ||   Xi   ||   ErrAprox%   ||   ErrRel%   ||\n"
-    result += "------------------------------------------------------\n"
-    for i in range(0, imax):
-        X1 = round(gx(X0),3)
-        ErrApr = ErrAprox(X0, X1)
-        ErrRela = ErrRel(X0, X1)
-        result += f"||  {i}  ||  {X0}  ||  {ErrApr}  ||  {ErrRela}  ||\n"
-        X0 = X1
-    return result
-
-#Menu inicial
-while(init):
-    option = float(input("Ingrese 1 si quiere usar limite por error\nIngrese 0 si quiere usar limite por iteraciones:\n"))
-    if(option==1):
-        X0 = float(input("Ingrese el X0 para la funcion: "))
-        ErrStop = float(input("Ingrese el error que quiere usar como limite: "))
-        print(LimiErr(X0, ErrStop))
-        init = False
-    elif(option==0):
-        X0 = float(input("Ingrese el X0 para la funcion: "))
-        imax = int(input("Ingrese el numero maximo de iteraciones"))
-        print(LimitIteracion(X0, imax))
-        init = False
+print(LimiErr(X0, ErrStop))
