@@ -27,6 +27,7 @@ def NewtonRaphson(X0, ErrStop):
     result = "||  i   ||   Xi   ||  Xi+1  ||   ErrAprox%   ||   ErrRel%   ||\n"
     result += "--------------------------------------------------------------\n"
     while(ErrApr > ErrStop):
+        
         fXi = round(funcion.subs(x, X0), rond)
         gXi = round(derivada.subs(x, X0), rond)
         X1 = round(X0 - (fXi / gXi), rond)
@@ -36,4 +37,7 @@ def NewtonRaphson(X0, ErrStop):
         X0 = X1
         i += 1
     return result
-print(NewtonRaphson(X0, ErrStop))
+try:
+    print(NewtonRaphson(X0, ErrStop))
+except Exception as e:
+    print(f"No se pudo realizar la operacion")
